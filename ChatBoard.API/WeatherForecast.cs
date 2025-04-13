@@ -1,4 +1,4 @@
-﻿namespace ChatBoard_API
+namespace ChatBoard.API
 {
     public class WeatherForecast
     {

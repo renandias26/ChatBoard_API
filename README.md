@@ -1,1 +1,1 @@
-﻿# ChatBoard_API
+# ChatBoard_API

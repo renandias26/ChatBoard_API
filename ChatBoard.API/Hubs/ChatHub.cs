@@ -1,8 +1,8 @@
-﻿using ChatBoard_API.HubsConnections;
-using ChatBoard_API.Models;
+﻿using ChatBoard.API.HubsConnections;
+using ChatBoard.API.Models;
 using Microsoft.AspNetCore.SignalR;
 
-namespace ChatBoard_API.Hubs
+namespace ChatBoard.API.Hubs
 {
     public class ChatHub(ChatConnection connection) : Hub
     {
@@ -12,7 +12,6 @@ namespace ChatBoard_API.Hubs
         {
             await Clients.All.SendAsync("ReceiveMessage", "admin", $"{conn.UserName} has joined");
         }
-
         public async Task JoinSpecificChat(UserConnection conn)
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, conn.ChatRoom);
@@ -31,6 +30,6 @@ namespace ChatBoard_API.Hubs
                 // AddMessageToGroup(conn.ChatRoom, message);
                 await Clients.GroupExcept(conn.ChatRoom, Context.ConnectionId).SendAsync("ReceiveMessage", conn.UserName, message);
             }
-        } 
+        }
     }
 }

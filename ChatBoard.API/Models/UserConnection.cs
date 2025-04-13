@@ -1,4 +1,4 @@
-﻿namespace ChatBoard_API.Models
+﻿namespace ChatBoard.API.Models
 {
     public class UserConnection
     {

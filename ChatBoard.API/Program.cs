@@ -1,5 +1,5 @@
-﻿using ChatBoard_API.Hubs;
-using ChatBoard_API.HubsConnections;
+﻿using ChatBoard.API.Hubs;
+using ChatBoard.API.HubsConnections;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +14,7 @@ builder.Services.AddCors(opt =>
 {
     opt.AddPolicy("AngularApp", builder =>
     {
+        //Adjust Origin ULR
         builder.WithOrigins("http://localhost:4200")
         .AllowAnyHeader()
         .AllowAnyMethod()
