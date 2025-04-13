@@ -19,6 +19,8 @@ namespace ChatBoard_API.Hubs
 
             _connection.connections[Context.ConnectionId] = conn;
 
+            //GetAllMessagesByGroupId(conn.ChatRoom);
+
             await Clients.Group(conn.ChatRoom).SendAsync("ReceiveMessage", "admin", $"{conn.UserName} has joined {conn.ChatRoom}");
         }
 
@@ -26,8 +28,9 @@ namespace ChatBoard_API.Hubs
         {
             if (_connection.connections.TryGetValue(Context.ConnectionId, out UserConnection? conn))
             {
-                await Clients.Group(conn.ChatRoom).SendAsync("ReceiveSpecificMessage", conn.UserName, message);
+                // AddMessageToGroup(conn.ChatRoom, message);
+                await Clients.GroupExcept(conn.ChatRoom, Context.ConnectionId).SendAsync("ReceiveMessage", conn.UserName, message);
             }
-        }
+        } 
     }
 }
