@@ -14,11 +14,10 @@ builder.Services.AddCors(opt =>
 {
     opt.AddPolicy("AngularApp", builder =>
     {
-        //Adjust Origin ULR
-        builder.AllowAnyOrigin()
+        builder.WithOrigins("http://localhost:4200")
         .AllowAnyHeader()
-        .AllowAnyMethod();
-        //.AllowCredentials();
+        .AllowAnyMethod()
+        .AllowCredentials();
     });
 });
 
