@@ -1,6 +1,7 @@
+﻿using ChatBoard_API;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ChatHub_API.Controllers;
+namespace ChatBoard_API.Controllers;
 
 [ApiController]
 [Route("[controller]")]

@@ -1,8 +1,8 @@
-﻿using Chat.HubsConnections;
-using Chat.Models;
+﻿using ChatBoard_API.HubsConnections;
+using ChatBoard_API.Models;
 using Microsoft.AspNetCore.SignalR;
 
-namespace Chat.Hubs
+namespace ChatBoard_API.Hubs
 {
     public class ChatHub(ChatConnection connection) : Hub
     {

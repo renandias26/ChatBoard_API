@@ -1,5 +1,5 @@
-﻿using Chat.Hubs;
-using Chat.HubsConnections;
+﻿using ChatBoard_API.Hubs;
+using ChatBoard_API.HubsConnections;
 
 var builder = WebApplication.CreateBuilder(args);
 

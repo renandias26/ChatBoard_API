@@ -1,7 +1,7 @@
-﻿using Chat.Models;
+﻿using ChatBoard_API.Models;
 using System.Collections.Concurrent;
 
-namespace Chat.HubsConnections
+namespace ChatBoard_API.HubsConnections
 {
     public class ChatConnection
     {
