@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ChatBoard.DataBase\ChatBoard.DataBase.csproj" />
+    <ProjectReference Include="..\ChatBoard.DTO\ChatBoard.DTO.csproj" />
+  </ItemGroup>
+
 </Project>

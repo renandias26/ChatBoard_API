@@ -1,30 +1,35 @@
-# See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
-
-# This stage is used when running from VS in fast mode (Default for Debug configuration)
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER $APP_UID
-WORKDIR /app
-EXPOSE 8080
-EXPOSE 8081
-
-
-# This stage is used to build the service project
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-ARG BUILD_CONFIGURATION=Release
+﻿# Estágio base com dependências comuns
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS base
 WORKDIR /src
 COPY ["ChatBoard.API/ChatBoard.API.csproj", "ChatBoard.API/"]
-RUN dotnet restore "./ChatBoard.API/ChatBoard.API.csproj"
+COPY ["ChatBoard.DataBase/ChatBoard.DataBase.csproj", "ChatBoard.DataBase/"]
+COPY ["ChatBoard.DTO/ChatBoard.DTO.csproj", "ChatBoard.DTO/"]
+COPY ["ChatBoard.Service/ChatBoard.Service.csproj", "ChatBoard.Service/"]
+RUN dotnet restore "ChatBoard.API/ChatBoard.API.csproj"
 COPY . .
-WORKDIR "/src/ChatBoard.API"
-RUN dotnet build "./ChatBoard.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
-# This stage is used to publish the service project to be copied to the final stage
+# Estágio de desenvolvimento - mantém todas as ferramentas do SDK
+FROM base AS dev
+WORKDIR /src/ChatBoard.API
+ENV ASPNETCORE_ENVIRONMENT=Development
+ENV ASPNETCORE_URLS=http://+:8080
+EXPOSE 8080
+# Executar em modo de desenvolvimento com hot reload
+ENTRYPOINT ["dotnet", "watch", "run", "--urls", "http://+:8080"]
+
+# Estágio de build - compila a aplicação
+FROM base AS build
+WORKDIR /src/ChatBoard.API
+RUN dotnet build "ChatBoard.API.csproj" -c Release -o /app/build
+
+# Estágio de publicação - cria os artefatos para produção
 FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./ChatBoard.API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "ChatBoard.API.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
-# This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
-FROM base AS final
+# Estágio final para produção - usa apenas o runtime
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS prod
 WORKDIR /app
 COPY --from=publish /app/publish .
+ENV ASPNETCORE_URLS=http://+:8080
+EXPOSE 8080
 ENTRYPOINT ["dotnet", "ChatBoard.API.dll"]

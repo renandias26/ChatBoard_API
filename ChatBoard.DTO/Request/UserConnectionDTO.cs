@@ -1,6 +1,6 @@
-﻿namespace ChatBoard.API.Models
+﻿namespace ChatBoard.DTO.Request
 {
-    public class UserConnection
+    public class UserConnectionDTO
     {
         public string UserName { get; set; } = string.Empty;
         public string ChatRoom { get; set; } = string.Empty;

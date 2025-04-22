@@ -1,4 +1,4 @@
-﻿using ChatBoard.API.Models;
+﻿using ChatBoard.DTO.Hub;
 using System.Collections.Concurrent;
 
 namespace ChatBoard.API.HubsConnections
