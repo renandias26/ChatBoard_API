@@ -1,4 +1,4 @@
-# 🗪 ChatBoard API
+﻿# 🗪 ChatBoard API
 ChatBoard é uma aplicação de chat em tempo real desenvolvida com .NET 8, utilizando SignalR para comunicação em tempo real e PostgreSQL como banco de dados.
 
 ## ✨Funcionalidades
@@ -23,3 +23,8 @@ ChatBoard é uma aplicação de chat em tempo real desenvolvida com .NET 8, util
 - PostgreSQL
 
 - Angular (Frontend)
+
+Exemplo de comando para executar o compose da aplicação (Rodar na raiz do projeto):
+```bash
+docker compose -f docker-compose.yml -f docker-compose.staging.yml --env-file ChatBoard.API/.env.staging up
+```

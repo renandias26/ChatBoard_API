@@ -1,0 +1,21 @@
+﻿services:
+  api:
+    build:
+      target: dev
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    volumes:
+      - ./:/src
+      # Exclui as pastas bin e obj para evitar conflitos entre host e container
+      - /src/ChatBoard.API/bin/
+      - /src/ChatBoard.API/obj/
+      - /src/ChatBoard.DataBase/bin/
+      - /src/ChatBoard.DataBase/obj/
+      - /src/ChatBoard.DTO/bin/
+      - /src/ChatBoard.DTO/obj/
+      - /src/ChatBoard.Service/bin/
+      - /src/ChatBoard.Service/obj/
+
+  postgres:
+    volumes:
+      - ./init-scripts:/docker-entrypoint-initdb.d

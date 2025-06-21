@@ -1,8 +1,6 @@
 ﻿using ChatBoard.DataBase.Context;
 using ChatBoard.DataBase.Interface;
-using ChatBoard.DataBase.Repository;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ChatBoard.DataBase.Injection
@@ -11,11 +9,11 @@ namespace ChatBoard.DataBase.Injection
     {
         public static IServiceCollection SetDatabase(
        this IServiceCollection services,
-       IConfiguration configuration)
+       string connectionString)
         {
             // Configurar DbContext
             services.AddDbContextPool<DataBaseContext>(options =>
-                options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+                options.UseNpgsql(connectionString));
 
             var repositories = typeof(ServiceCollectionExtensions).Assembly.DefinedTypes.Where(x => x.FullName!.EndsWith("Repository"));
 

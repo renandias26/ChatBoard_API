@@ -1,0 +1,13 @@
+﻿services:
+  api:
+    build:
+      target: prod
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Staging
+
+  postgres:
+    volumes:
+      - postgres_data_staging:/var/lib/postgresql/data
+
+volumes:
+  postgres_data_staging:

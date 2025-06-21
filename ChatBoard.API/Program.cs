@@ -2,8 +2,14 @@
 using ChatBoard.API.HubsConnections;
 using ChatBoard.DataBase.Injection;
 using ChatBoard.Services.Injection;
+using DotNetEnv;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using System.Text;
+
+var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
+var envFileName = $".env.{environment.ToLower()}";
+Env.Load(envFileName);
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,15 +17,26 @@ builder.Services.AddSignalR();
 builder.Services.AddControllers();
 builder.Services.AddApplicationServices();
 
-builder.Services.SetDatabase(builder.Configuration);
+var buildconnectionString = new StringBuilder();
+buildconnectionString.Append($"Host={Environment.GetEnvironmentVariable("DB_Host")};");
+buildconnectionString.Append($"Port={Environment.GetEnvironmentVariable("DB_Port")};");
+buildconnectionString.Append($"Database={Environment.GetEnvironmentVariable("DB_Database")};");
+buildconnectionString.Append($"Username={Environment.GetEnvironmentVariable("DB_Username")};");
+buildconnectionString.Append($"Password={Environment.GetEnvironmentVariable("DB_Password")};");
+
+var connectionString = buildconnectionString.ToString();
+
+builder.Services.SetDatabase(connectionString);
 
 builder.Services.AddHealthChecks()
     .AddNpgSql(
-        builder.Configuration.GetConnectionString("DefaultConnection") ?? "",
+        connectionString,
         name: "database",
         failureStatus: HealthStatus.Unhealthy,
         tags: ["db", "postgresql"])
-    .AddCheck("signalr_health", () => HealthCheckResult.Healthy("SignalR está disponível"),
+    .AddCheck(
+        "signalr_health", 
+        () => HealthCheckResult.Healthy("SignalR está disponível"),
         tags: ["signalr"]);
 
 
@@ -33,7 +50,7 @@ builder.Services.AddCors(opt =>
     opt.AddPolicy("AngularApp", builder =>
     {
         //Adjust Origin ULR
-        builder.WithOrigins("http://localhost:4200")
+        builder.WithOrigins(Environment.GetEnvironmentVariable("Front_URL") ?? "")
         .AllowAnyHeader()
         .AllowAnyMethod()
         .AllowCredentials();
