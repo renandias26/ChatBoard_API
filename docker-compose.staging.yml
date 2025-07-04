@@ -1,9 +1,11 @@
 ﻿services:
   api:
-    build:
-      target: prod
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Staging
+    env_file:
+        - ChatBoard.API/.env.staging
+
+  migration:
+    env_file:
+        - ChatBoard.API/.env.staging
 
   postgres:
     volumes:

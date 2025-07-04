@@ -1,39 +1,28 @@
-﻿using ChatBoard.API.Hubs;
+﻿using ChatBoard.API;
+using ChatBoard.API.Hubs;
 using ChatBoard.API.HubsConnections;
 using ChatBoard.DataBase.Injection;
 using ChatBoard.Services.Injection;
-using DotNetEnv;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using System.Text;
-
-var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
-var envFileName = $".env.{environment.ToLower()}";
-Env.Load(envFileName);
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.SetDatabase();
+
+var isMigrationMode = builder.Configuration.GetValue<bool>("MIGRATION_MODE", false);
+if (isMigrationMode)
+{
+    MigrationExtension.ApplyMigrations(builder);
+    return;
+
+}
 
 builder.Services.AddSignalR();
 builder.Services.AddControllers();
 builder.Services.AddApplicationServices();
 
-var buildconnectionString = new StringBuilder();
-buildconnectionString.Append($"Host={Environment.GetEnvironmentVariable("DB_Host")};");
-buildconnectionString.Append($"Port={Environment.GetEnvironmentVariable("DB_Port")};");
-buildconnectionString.Append($"Database={Environment.GetEnvironmentVariable("DB_Database")};");
-buildconnectionString.Append($"Username={Environment.GetEnvironmentVariable("DB_Username")};");
-buildconnectionString.Append($"Password={Environment.GetEnvironmentVariable("DB_Password")};");
-
-var connectionString = buildconnectionString.ToString();
-
-builder.Services.SetDatabase(connectionString);
-
 builder.Services.AddHealthChecks()
-    .AddNpgSql(
-        connectionString,
-        name: "database",
-        failureStatus: HealthStatus.Unhealthy,
-        tags: ["db", "postgresql"])
+    .AddDatabaseHealthCheck()
     .AddCheck(
         "signalr_health", 
         () => HealthCheckResult.Healthy("SignalR está disponível"),
@@ -47,10 +36,11 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddCors(opt =>
 {
-    opt.AddPolicy("AngularApp", builder =>
+    opt.AddPolicy("AngularApp", CorsBuilder =>
     {
-        //Adjust Origin ULR
-        builder.WithOrigins(Environment.GetEnvironmentVariable("Front_URL") ?? "")
+        string url = builder.Configuration.GetValue<string>("Front_URL") ?? "";
+
+        CorsBuilder.WithOrigins(url)
         .AllowAnyHeader()
         .AllowAnyMethod()
         .AllowCredentials();
@@ -82,7 +72,7 @@ app.MapHealthChecks("/health");
 
 app.MapHealthChecks("/health/database", new HealthCheckOptions
 {
-    Predicate = (check) => check.Tags.Contains("db")
+    Predicate = (check) => check.Tags.Contains(DatabaseInjectionExtensions.HealthCheckTag)
 });
 
 app.MapHealthChecks("/health/signalr", new HealthCheckOptions

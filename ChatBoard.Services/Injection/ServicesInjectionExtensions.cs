@@ -1,15 +1,13 @@
-﻿using ChatBoard.Services.Interface;
-using ChatBoard.Services.Service;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace ChatBoard.Services.Injection
 {
-    public static class ServiceCollectionExtensions
+    public static class ServicesInjectionExtensions
     {
         public static IServiceCollection AddApplicationServices(
             this IServiceCollection services)
         {
-            var appServices = typeof(ServiceCollectionExtensions).Assembly.DefinedTypes.Where(x => x.FullName!.EndsWith("Service"));
+            var appServices = typeof(ServicesInjectionExtensions).Assembly.DefinedTypes.Where(x => x.FullName!.EndsWith("Service"));
 
             foreach (var type in appServices)
             {
@@ -19,9 +17,6 @@ namespace ChatBoard.Services.Injection
                     services.AddScoped(inter, type);
                 }
             }
-
-            //services.AddScoped<IMessageService, MessageService>();
-            //services.AddScoped<IGroupService, GroupService>();
 
             return services;
         }

@@ -3,13 +3,29 @@
     build:
       context: .
       dockerfile: ChatBoard.API\Dockerfile
+      target: prod
     ports:
       - "8080:8080"
-    environment:
-        - ASPNETCORE_URLS=http://+:8080
-        - ASPNETCORE_ENVIRONMENT=Production
+    env_file:
+        - ChatBoard.API/.env
     depends_on:
         - postgres
+    profiles:
+        - app
+
+  migration:
+    build:
+        context: .
+        dockerfile: ChatBoard.API\Dockerfile
+        target: migrator
+    env_file:
+        - ChatBoard.API/.env
+    environment:
+        - MIGRATION_MODE=true        
+    depends_on:
+        - postgres
+    profiles:
+        - migration
 
   postgres:
     image: postgres:17-alpine

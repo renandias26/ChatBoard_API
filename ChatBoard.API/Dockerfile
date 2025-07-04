@@ -23,6 +23,11 @@ RUN dotnet build "ChatBoard.API.csproj" -c Release -o /app/build --no-restore
 FROM build AS publish
 RUN dotnet publish "ChatBoard.API.csproj" -c Release -o /app/publish /p:UseAppHost=false --no-restore
 
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS migrator
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "ChatBoard.API.dll"]
+
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS prod
 WORKDIR /app
 COPY --from=publish /app/publish .
