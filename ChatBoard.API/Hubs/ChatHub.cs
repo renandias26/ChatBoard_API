@@ -1,7 +1,6 @@
-﻿using ChatBoard.API.HubsConnections;
-using ChatBoard.DTO.Hub;
-using ChatBoard.DTO.Request;
-using ChatBoard.Services.Interface;
+﻿using ChatBoard.Application.DTO.Hub;
+using ChatBoard.Application.DTO.Request;
+using ChatBoard.Application.Interface;
 using Microsoft.AspNetCore.SignalR;
 using System.Collections.Concurrent;
 

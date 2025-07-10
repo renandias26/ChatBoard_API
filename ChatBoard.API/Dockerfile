@@ -1,13 +1,10 @@
 ﻿FROM mcr.microsoft.com/dotnet/sdk:8.0 AS base
 WORKDIR /src
 COPY ["ChatBoard.API/ChatBoard.API.csproj", "ChatBoard.API/"]
-COPY ["ChatBoard.DataBase/ChatBoard.DataBase.csproj", "ChatBoard.DataBase/"]
-COPY ["ChatBoard.DTO/ChatBoard.DTO.csproj", "ChatBoard.DTO/"]
-COPY ["ChatBoard.Services/ChatBoard.Services.csproj", "ChatBoard.Services/"]
-RUN dotnet restore "ChatBoard.API/ChatBoard.API.csproj" \
-    && dotnet restore "ChatBoard.DataBase/ChatBoard.DataBase.csproj" \
-    && dotnet restore "ChatBoard.DTO/ChatBoard.DTO.csproj" \
-    && dotnet restore "ChatBoard.Services/ChatBoard.Services.csproj"
+COPY ["ChatBoard.Infrastructure/ChatBoard.Infrastructure.csproj", "ChatBoard.Infrastructure/"]
+COPY ["ChatBoard.Domain/ChatBoard.Domain.csproj", "ChatBoard.Domain/"]
+COPY ["ChatBoard.Application/ChatBoard.Application.csproj", "ChatBoard.Application/"]
+RUN dotnet restore "ChatBoard.API/ChatBoard.API.csproj"
 COPY . .
 
 FROM base AS dev

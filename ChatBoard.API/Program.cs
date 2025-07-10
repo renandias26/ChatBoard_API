@@ -1,9 +1,10 @@
-﻿using ChatBoard.API;
-using ChatBoard.API.Hubs;
-using ChatBoard.API.HubsConnections;
-using ChatBoard.DataBase.Injection;
-using ChatBoard.Services.Injection;
+﻿using ChatBoard.API.Hubs;
+using ChatBoard.Application.DTO.Hub;
+using ChatBoard.Application.Services.Injection;
+using ChatBoard.Infrastructure.DataBase.Context;
+using ChatBoard.Infrastructure.DataBase.Injection;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,7 +13,11 @@ builder.Services.SetDatabase();
 var isMigrationMode = builder.Configuration.GetValue<bool>("MIGRATION_MODE", false);
 if (isMigrationMode)
 {
-    MigrationExtension.ApplyMigrations(builder);
+    var migrationApp = builder.Build();
+    using var scope = migrationApp.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<DataBaseContext>();
+    db.Database.Migrate();
+    Environment.Exit(0);
     return;
 
 }
