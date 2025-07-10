@@ -1,11 +1,4 @@
-﻿using ChatBoard.DataBase.Context;
-using ChatBoard.DataBase.Entity;
-using ChatBoard.DataBase.Repository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ChatBoard.DataBase.Entity;
 
 namespace ChatBoard.DataBase.Interface
 {
