@@ -20,9 +20,9 @@ namespace ChatBoard.Application.Services
             {
                 Name = GroupName
             };
-            await _groupRepository.AddAsync(group);
+            var addedGroup = await _groupRepository.AddAsync(group);
             await _unitOfWork.SaveChangesAsync();
-            return group;
+            return addedGroup;
         }
     }
 }

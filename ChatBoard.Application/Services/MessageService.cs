@@ -15,7 +15,7 @@ namespace ChatBoard.Application.Services
             return messages;
         }
 
-        public async Task AddMessageToGroup(int groupID, string message, string UserName, DateTimeOffset dateTime)
+        public async Task<Message> AddMessageToGroup(int groupID, string message, string UserName, DateTimeOffset dateTime)
         {
             var newMessage = new Message
             {
@@ -24,9 +24,9 @@ namespace ChatBoard.Application.Services
                 UserName = UserName,
                 DateTime = dateTime,
             };
-            await _messageRepository.AddAsync(newMessage);
+            var addedMessage = await _messageRepository.AddAsync(newMessage);
             await _unitOfWork.SaveChangesAsync();
-
+            return addedMessage;
         }
 
         public async Task ClearMessages(int groupID)

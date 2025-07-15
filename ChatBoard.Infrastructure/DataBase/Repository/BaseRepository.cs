@@ -8,9 +8,10 @@ namespace ChatBoard.Infrastructure.DataBase.Repository
     {
         protected readonly DbSet<T> _dbSet = context.Set<T>();
 
-        public async Task AddAsync(T entity)
+        public async Task<T> AddAsync(T entity)
         {
-            await _dbSet.AddAsync(entity);
+            var added = await _dbSet.AddAsync(entity);            
+            return added.Entity;
         }
 
         public void Remove(T entity)
